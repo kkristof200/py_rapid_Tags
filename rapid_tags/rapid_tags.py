@@ -52,6 +52,18 @@ class RapidTags:
 
             return [t.replace('\\', '') for t in request.get(
                 'https://rapidtags.io/api/generator?query=' + quote(title),
+                headers={
+                    'Host': 'rapidtags.io',
+                    'Accept': 'application/json'
+                    'Accept-Language': 'en-US,en;q=0.5',
+                    'Accept-Encoding': 'gzip, deflate, br',
+                    # 'Referer': 'https://rapidtags.io/generator',
+                    'DNT': '1',
+                    'Connection': 'keep-alive',
+                    'Pragma': 'no-cache',
+                    'Cache-Control': 'no-cache',
+                    'TE': 'Trailers'
+                },
                 max_request_try_count=1,
                 user_agent=user_agent,
                 proxy_ftp=proxy,
@@ -66,4 +78,4 @@ class RapidTags:
             return None
 
 
-# ---------------------------------------------------------------------------------------------------------------------------------------- #
+# ---------------------------------------------------------------------------------------------------------------------------------------- #s
