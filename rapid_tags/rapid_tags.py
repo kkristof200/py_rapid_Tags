@@ -76,7 +76,8 @@ class RapidTags:
             try:
                 j = response.json()
             except:
-                j = json.loads(brotli.decompress(response.content))
+                pass
+                # j = json.loads(brotli.decompress(response.content))
 
             return [t.replace('\\', '') for t in j['tags']]
         except Exception as e:
