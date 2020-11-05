@@ -3,10 +3,11 @@
 # System
 from typing import Optional, List, Union
 from urllib.parse import quote
-import random
+import random, json
 
 # Pip
 from kcu import request
+import brotli
 
 # ---------------------------------------------------------------------------------------------------------------------------------------- #
 
@@ -49,28 +50,35 @@ class RapidTags:
         try:
             if type(proxy) == list:
                 proxy = random.choice(proxy) if len(proxy) > 0 else None
-
-            return [t.replace('\\', '') for t in request.get(
+            
+            response = request.get(
                 'https://rapidtags.io/api/generator?query=' + quote(title),
                 headers={
                     'Host': 'rapidtags.io',
-                    'Accept': 'application/json'
+                    # 'User-Agent': user_agent,
+                    'Accept': 'application/json',
                     'Accept-Language': 'en-US,en;q=0.5',
-                    'Accept-Encoding': 'gzip, deflate, br',
-                    # 'Referer': 'https://rapidtags.io/generator',
+                    'Accept-Encoding': 'gzip, deflate',
+                    'Referer': 'https://rapidtags.io/generator',
                     'DNT': '1',
                     'Connection': 'keep-alive',
                     'Pragma': 'no-cache',
                     'Cache-Control': 'no-cache',
-                    'TE': 'Trailers'
+                    'TE': 'Trailers',
+                    'Upgrade-Insecure-Requests': '1'
                 },
                 max_request_try_count=1,
-                user_agent=user_agent,
-                proxy_ftp=proxy,
-                proxy_http=proxy,
-                proxy_https=proxy,
+                # user_agent=user_agent,
+                proxy=proxy,
                 debug=debug
-            ).json()['tags']]
+            )
+
+            try:
+                j = response.json()
+            except:
+                j = json.loads(brotli.decompress(response.content))
+
+            return [t.replace('\\', '') for t in j['tags']]
         except Exception as e:
             if debug:
                 print(e)
