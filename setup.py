@@ -9,7 +9,7 @@ else:
 
 setuptools.setup(
     name="rapid_tags",
-    version="0.0.5",
+    version="0.0.6",
     author="Kristof",
     description="python wrapper for rapidtags.io",
     long_description=long_description,

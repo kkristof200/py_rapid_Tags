@@ -21,7 +21,7 @@ class RapidTags:
     def __init__(
         self,
         proxy: Optional[Union[List[str], str]] = None,
-        user_agent: Optional[str] = None
+        user_agent: Optional[Union[List[str], str]] = None
     ):
         self.proxy = proxy
         self.user_agent = user_agent
@@ -33,7 +33,7 @@ class RapidTags:
         self,
         title: str,
         proxy: Optional[Union[List[str], str]] = None,
-        user_agent: Optional[str] = None,
+        user_agent: Optional[Union[List[str], str]] = None,
         debug: bool = False
     ) -> Optional[List[str]]:
         return RapidTags.get_tags_cls(title, proxy or self.proxy, user_agent or self.user_agent, debug=debug)
@@ -43,12 +43,15 @@ class RapidTags:
         cls,
         title: str,
         proxy: Optional[Union[List[str], str]] = None,
-        user_agent: Optional[str] = None,
+        user_agent: Optional[Union[List[str], str]] = None,
         debug: bool = False
     ) -> Optional[List[str]]:
         try:
             if type(proxy) == list:
                 proxy = random.choice(proxy) if len(proxy) > 0 else None
+
+            if type(user_agent) == list:
+                proxy = random.choice(user_agent) if len(user_agent) > 0 else None
             
             return [t.replace('\\', '') for t in request.get(
                 'https://rapidtags.io/api/generator?query=' + quote(title),
