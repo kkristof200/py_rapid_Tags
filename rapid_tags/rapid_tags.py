@@ -8,6 +8,9 @@ import random, json
 # Pip
 from kcu import request
 
+# Local
+from .platform import Platform
+
 # ---------------------------------------------------------------------------------------------------------------------------------------- #
 
 
@@ -34,9 +37,10 @@ class RapidTags:
         title: str,
         proxy: Optional[Union[List[str], str]] = None,
         user_agent: Optional[Union[List[str], str]] = None,
+        platform: Optional[Platform] = Platform.Youtube,
         debug: bool = False
     ) -> Optional[List[str]]:
-        return RapidTags.get_tags_cls(title, proxy or self.proxy, user_agent or self.user_agent, debug=debug)
+        return RapidTags.get_tags_cls(title, proxy or self.proxy, user_agent or self.user_agent, platform=platform, debug=debug)
 
     @classmethod
     def get_tags_cls(
@@ -44,6 +48,7 @@ class RapidTags:
         title: str,
         proxy: Optional[Union[List[str], str]] = None,
         user_agent: Optional[Union[List[str], str]] = None,
+        platform: Optional[Platform] = Platform.Youtube,
         debug: bool = False
     ) -> Optional[List[str]]:
         try:
@@ -52,9 +57,9 @@ class RapidTags:
 
             if type(user_agent) == list:
                 proxy = random.choice(user_agent) if len(user_agent) > 0 else None
-            
+
             return [t.replace('\\', '') for t in request.get(
-                'https://rapidtags.io/api/generator?query=' + quote(title),
+                'https://rapidtags.io/api/generator?query={}&type={}'.format(title, (platform or Platform.Youtube).value),
                 headers={
                     'Host': 'rapidtags.io',
                     'Accept': 'application/json',
@@ -80,4 +85,4 @@ class RapidTags:
             return None
 
 
-# ---------------------------------------------------------------------------------------------------------------------------------------- #s
+# ---------------------------------------------------------------------------------------------------------------------------------------- #
